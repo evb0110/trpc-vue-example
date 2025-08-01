@@ -18,6 +18,8 @@
     "@tanstack/vue-query": "^5.83.1",
     "@trpc/client": "^11.4.3",
     "@trpc/server": "^11.4.3",
+    "@types/cookie-parser": "^1.4.9",
+    "cookie-parser": "^1.4.7",
     "vue": "^3.5.18",
     "zod": "^4.0.14"
   },
