@@ -31,8 +31,7 @@ onMounted(async () => {
 #app {
     font-family: Arial, sans-serif;
     max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
+    margin-inline: auto;
 }
 
 h1 {
@@ -41,7 +40,8 @@ h1 {
     margin-bottom: 40px;
 }
 
-* {
+*, *::before, *::after {
+    margin: 0;
     box-sizing: border-box;
 }
 </style>
