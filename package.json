@@ -1,0 +1,38 @@
+{
+  "name": "trpc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev:server": "tsx watch server/index.ts",
+    "dev:client": "vite",
+    "dev": "npm run dev:server & npm run dev:client",
+    "build": "vue-tsc && vite build",
+    "lint": "eslint . --ext .ts,.vue",
+    "lint:fix": "eslint . --ext .ts,.vue --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@tanstack/vue-query": "^5.83.1",
+    "@trpc/client": "^11.4.3",
+    "@trpc/server": "^11.4.3",
+    "vue": "^3.5.18",
+    "zod": "^4.0.14"
+  },
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/eslint-config-typescript": "^11.0.3",
+    "eslint": "^8.57.1",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-vue": "^9.33.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "vite": "^7.0.6",
+    "vue-tsc": "^3.0.4"
+  }
+}
