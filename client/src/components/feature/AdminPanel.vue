@@ -156,7 +156,7 @@ async function getAnalytics() {
     analytics.value = null;
   
     try {
-        analytics.value = await trpc.admin.analytics.query({});
+        analytics.value = await trpc.admin.analytics.query();
     } catch (err: any) {
         error.value = err.message || 'Failed to load analytics';
     } finally {

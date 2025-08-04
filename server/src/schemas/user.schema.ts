@@ -19,6 +19,5 @@ export const updateProfileSchema = z.object({
     email: z.string().email().optional(),
 });
 
+// Only export User type because it's actually used in auth.ts and context
 export type User = z.infer<typeof userSchema>;
-export type CreateUserInput = z.infer<typeof createUserSchema>;
-export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

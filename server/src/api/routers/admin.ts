@@ -7,10 +7,7 @@ const deleteUserSchema = z.object({
     userId: z.string().min(1),
 });
 
-const analyticsQuerySchema = z.object({
-    startDate: z.date().optional(),
-    endDate: z.date().optional(),
-});
+// Remove unused schema - the analytics query doesn't actually use it
 
 export const adminRouter = router({
     users: adminProcedure
@@ -57,13 +54,12 @@ export const adminRouter = router({
         }),
     
     analytics: permissionProcedure('read:analytics')
-        .input(analyticsQuerySchema)
-        .query(async ({ ctx, input }) => {
+        .query(async ({ ctx }) => {
             // In a real app, this would query analytics data
             return {
                 period: {
-                    start: input.startDate || new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-                    end: input.endDate || new Date(),
+                    start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+                    end: new Date(),
                 },
                 metrics: {
                     dailyActiveUsers: 42,
