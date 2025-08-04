@@ -1,5 +1,5 @@
-// Re-export types for backward compatibility
-export type { TAppRouter } from './src/app';
+// Export types
+export type { AppRouter } from './src/api/root';
 
 // Start the server
 import { startServer } from './src/server';

@@ -138,27 +138,7 @@ module.exports = {
         'indent': [warnOnDevelop, 4, { SwitchCase: 1 }],
         'block-spacing': [warnOnDevelop, 'always'],
         'import/no-relative-packages': warnOnDevelop,
-        '@typescript-eslint/naming-convention': [
-            'error',
-            {
-                selector: 'typeAlias',
-                format: ['PascalCase'],
-                prefix: ['T'],
-                filter: {
-                    regex: '^(Dict)$',
-                    match: false,
-                },
-            },
-            {
-                selector: 'interface',
-                format: ['PascalCase'],
-                prefix: ['I'],
-                filter: {
-                    regex: '^(Dict)$',
-                    match: false,
-                },
-            },
-        ],
+        '@typescript-eslint/naming-convention': 'off', // Modern TypeScript doesn't require I/T prefixes
     },
     parserOptions: {
         ecmaVersion: 'latest',

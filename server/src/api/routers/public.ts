@@ -1,43 +1,47 @@
 import { z } from 'zod';
-import { publicProcedure, router } from '../context/trpc';
-import { rateLimitedProcedure } from '../middleware/rateLimit.middleware';
-import { globalRateLimiter } from '../utils/rateLimit';
+import { publicProcedure, router } from '../trpc';
+import { rateLimitedProcedure } from '../../middleware/rateLimit';
+import { globalRateLimiter } from '../../utils/rateLimit';
+
+const helloInputSchema = z.object({
+    name: z.string().min(1).max(100),
+});
+
+const generateReportSchema = z.object({
+    type: z.enum(['summary', 'detailed']),
+});
 
 export const publicRouter = router({
-    // Simple hello endpoint
     hello: publicProcedure
-        .input(z.object({ name: z.string() }))
+        .input(helloInputSchema)
         .query(({ input }) => {
             return {
                 greeting: `Hello ${input.name}!`,
+                timestamp: new Date(),
             };
         }),
     
-    // Get request info (shows IP, user agent, etc.)
-    getRequestInfo: publicProcedure
+    requestInfo: publicProcedure
         .query(({ ctx }) => {
             return {
-                yourIp: ctx.requestInfo.ip,
+                ip: ctx.requestInfo.ip,
                 userAgent: ctx.requestInfo.userAgent,
                 requestCount: ctx.requestInfo.requestsInWindow,
                 timestamp: ctx.requestInfo.timestamp,
             };
         }),
     
-    // Rate limited report generation
     generateReport: rateLimitedProcedure
-        .input(z.object({
-            type: z.enum(['summary', 'detailed']),
-        }))
+        .input(generateReportSchema)
         .mutation(({ ctx, input }) => {
-            console.log(`Generating ${input.type} report for ${ctx.requestInfo.ip}`);
-            
             const remaining = globalRateLimiter.getRemainingRequests(ctx.requestInfo.ip);
             
             return {
-                report: `${input.type} report generated`,
+                type: input.type,
+                report: `${input.type} report generated successfully`,
                 requestsRemaining: remaining,
                 generatedAt: new Date(),
+                generatedBy: ctx.requestInfo.ip,
             };
         }),
 });

@@ -1,16 +1,17 @@
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
-import type { TAppRouter } from '../../../server/index';
+import superjson from 'superjson';
+import type { AppRouter } from '../../../server/index';
 
-export const trpc = createTRPCProxyClient<TAppRouter>({
+export const trpc = createTRPCProxyClient<AppRouter>({
     links: [
         httpBatchLink({
             url: 'http://localhost:3000',
-            // Send cookies with requests
-            fetch: (url, options) => {
+            transformer: superjson,
+            fetch: (url, options = {}) => {
                 return fetch(url, {
                     ...options,
-                    credentials: 'include', // This ensures cookies are sent
-                });
+                    credentials: 'include',
+                } as RequestInit);
             },
         }),
     ],

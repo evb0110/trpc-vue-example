@@ -1,26 +1,30 @@
-import type { TUser } from '../types';
+import type { User } from '../schemas/user.schema';
 
 // Mock user database
-const MOCK_USERS: Record<string, TUser> = {
+const MOCK_USERS: Record<string, User> = {
     'user-token': {
         id: '123',
-        name: 'John User',
+        username: 'john_user',
+        email: 'john@example.com',
         role: 'user',
         permissions: ['read:profile', 'update:profile'],
+        createdAt: new Date('2024-01-01'),
     },
     'admin-token': {
         id: '456',
-        name: 'Jane Admin',
+        username: 'jane_admin',
+        email: 'jane@example.com',
         role: 'admin',
         permissions: ['read:profile', 'update:profile', 'delete:users', 'read:analytics', 'manage:system'],
+        createdAt: new Date('2024-01-01'),
     },
 };
 
-export function getUserByToken(token: string): TUser | undefined {
+export function getUserByToken(token: string): User | undefined {
     return MOCK_USERS[token];
 }
 
-export function validateCredentials(username: string, password: string): { token: string; user: TUser } | null {
+export function validateCredentials(username: string, password: string): { token: string; user: User } | null {
     // In production, validate against database and generate JWT
     // For demo, accept any credentials and return appropriate token
     

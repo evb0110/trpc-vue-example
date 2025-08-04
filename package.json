@@ -20,7 +20,11 @@
     "@trpc/client": "^11.4.3",
     "@trpc/server": "^11.4.3",
     "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "pinia": "^3.0.3",
+    "superjson": "^2.2.2",
     "vue": "^3.5.18",
     "zod": "^4.0.14"
   },

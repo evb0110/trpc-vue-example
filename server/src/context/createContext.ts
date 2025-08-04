@@ -1,8 +1,20 @@
 import type { CreateHTTPContextOptions } from '@trpc/server/adapters/standalone';
-import type { TContext } from '../types';
+import type { User } from '../schemas/user.schema';
 import { parseCookies } from '../utils/cookies';
 import { getUserByToken } from '../utils/auth';
 import { globalRateLimiter } from '../utils/rateLimit';
+
+export type TContext = {
+    user?: User;
+    requestInfo: {
+        ip: string;
+        userAgent: string;
+        timestamp: Date;
+        requestsInWindow: number;
+    };
+    req: CreateHTTPContextOptions['req'];
+    res: CreateHTTPContextOptions['res'];
+};
 
 export function createContext({ req, res }: CreateHTTPContextOptions): TContext {
     // Get client IP for rate limiting

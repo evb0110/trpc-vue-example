@@ -1,27 +1,16 @@
 import { createHTTPServer } from '@trpc/server/adapters/standalone';
-import { appRouter } from './app';
+import cors from 'cors';
+import { appRouter } from './api/root';
 import { createContext } from './context/createContext';
 import { config } from './config';
 
 export const server = createHTTPServer({
     router: appRouter,
     createContext,
-    middleware: (req, res, next) => {
-        // CORS headers
-        res.setHeader('Access-Control-Allow-Origin', config.server.corsOrigin);
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-        
-        // Handle preflight requests
-        if (req.method === 'OPTIONS') {
-            res.writeHead(200);
-            res.end();
-            return;
-        }
-        
-        next();
-    },
+    middleware: cors({
+        origin: config.server.corsOrigin,
+        credentials: true,
+    }),
 });
 
 export function startServer() {
