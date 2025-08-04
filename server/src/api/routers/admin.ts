@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { router } from '../trpc';
 import { adminProcedure, permissionProcedure } from '../../middleware/auth';
-import { globalRateLimiter } from '../../utils/rateLimit';
 
 const deleteUserSchema = z.object({
     userId: z.string().min(1),
@@ -32,7 +31,6 @@ export const adminRouter = router({
             return {
                 stats: {
                     totalUsers: 3,
-                    activeConnections: globalRateLimiter.getActiveConnectionsCount(),
                     serverUptime: Math.floor(process.uptime()),
                     memoryUsage: process.memoryUsage(),
                 },

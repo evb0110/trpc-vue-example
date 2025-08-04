@@ -40,7 +40,7 @@ withDefaults(defineProps<Props>(), {
 });
 
 defineEmits<{
-  click: [event: MouseEvent];
+  (e: 'click', event: MouseEvent): void;
 }>();
 </script>
 

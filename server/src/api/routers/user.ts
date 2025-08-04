@@ -1,7 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { publicProcedure, router } from '../trpc';
 import { permissionProcedure, protectedProcedure } from '../../middleware/auth';
-import { strictProcedure } from '../../middleware/rateLimit';
 import {
     createUserSchema,
     updateProfileSchema,
@@ -53,14 +52,13 @@ export const userRouter = router({
             };
         }),
     
-    delete: strictProcedure
+    delete: protectedProcedure
         .mutation(async ({ ctx }) => {
             // In a real app, this would soft-delete the user
             return {
                 success: true,
                 message: `Account ${ctx.user.id} scheduled for deletion`,
                 requestedBy: ctx.user.username,
-                requestedFrom: ctx.requestInfo.ip,
                 scheduledAt: new Date(),
             };
         }),

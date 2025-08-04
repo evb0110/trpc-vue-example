@@ -1,7 +1,5 @@
 import { z } from 'zod';
 import { publicProcedure, router } from '../trpc';
-import { rateLimitedProcedure } from '../../middleware/rateLimit';
-import { globalRateLimiter } from '../../utils/rateLimit';
 
 const helloInputSchema = z.object({
     name: z.string().min(1).max(100),
@@ -21,27 +19,20 @@ export const publicRouter = router({
             };
         }),
     
-    requestInfo: publicProcedure
-        .query(({ ctx }) => {
+    getServerTime: publicProcedure
+        .query(() => {
             return {
-                ip: ctx.requestInfo.ip,
-                userAgent: ctx.requestInfo.userAgent,
-                requestCount: ctx.requestInfo.requestsInWindow,
-                timestamp: ctx.requestInfo.timestamp,
+                timestamp: new Date(),
             };
         }),
     
-    generateReport: rateLimitedProcedure
+    generateReport: publicProcedure
         .input(generateReportSchema)
-        .mutation(({ ctx, input }) => {
-            const remaining = globalRateLimiter.getRemainingRequests(ctx.requestInfo.ip);
-            
+        .mutation(({ input }) => {
             return {
                 type: input.type,
                 report: `${input.type} report generated successfully`,
-                requestsRemaining: remaining,
                 generatedAt: new Date(),
-                generatedBy: ctx.requestInfo.ip,
             };
         }),
 });

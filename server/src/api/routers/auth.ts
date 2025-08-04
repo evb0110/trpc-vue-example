@@ -1,3 +1,4 @@
+import { constants as http2Constants } from 'http2';
 import { TRPCError } from '@trpc/server';
 import type { ServerResponse } from 'http';
 import { publicProcedure, router } from '../trpc';
@@ -11,17 +12,17 @@ export const authRouter = router({
         .input(loginSchema)
         .mutation(({ ctx, input }) => {
             const credentials = validateCredentials(input.username, input.password);
-            
+
             if (!credentials) {
                 throw new TRPCError({
                     code: 'UNAUTHORIZED',
                     message: 'Invalid credentials',
                 });
             }
-            
+
             const res = ctx.res as ServerResponse;
-            res.setHeader('Set-Cookie', createAuthCookie(credentials.token));
-            
+            res.setHeader(http2Constants.HTTP2_HEADER_SET_COOKIE, createAuthCookie(credentials.token));
+
             return {
                 success: true,
                 user: {
@@ -32,15 +33,15 @@ export const authRouter = router({
                 },
             };
         }),
-    
+
     logout: publicProcedure
         .mutation(({ ctx }) => {
             const res = ctx.res as ServerResponse;
-            res.setHeader('Set-Cookie', clearAuthCookie());
-            
+            res.setHeader(http2Constants.HTTP2_HEADER_SET_COOKIE, clearAuthCookie());
+
             return { success: true };
         }),
-    
+
     me: protectedProcedure
         .query(({ ctx }) => {
             return {

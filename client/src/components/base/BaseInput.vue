@@ -38,19 +38,21 @@ interface Props {
   autocomplete?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
     type: 'text',
     disabled: false,
     required: false,
 });
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string];
-  blur: [event: FocusEvent];
-  focus: [event: FocusEvent];
+  (e: 'update:modelValue', value: string): void;
+  (e: 'blur', event: FocusEvent): void;
+  (e: 'focus', event: FocusEvent): void;
 }>();
 
-const inputId = computed(() => `input-${Math.random().toString(36).substr(2, 9)}`);
+const inputId = computed(() =>
+    `input-${Math.random().toString(36).substring(2, 9)}`
+);
 
 function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
