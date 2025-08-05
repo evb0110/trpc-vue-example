@@ -51,7 +51,7 @@ const emit = defineEmits<{
 }>();
 
 const inputId = computed(() =>
-    `input-${Math.random().toString(36).substring(2, 9)}`
+    `input-${Math.random().toString(36).substring(2, 9)}`,
 );
 
 function handleInput(event: Event) {

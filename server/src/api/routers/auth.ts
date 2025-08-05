@@ -1,4 +1,5 @@
 import { constants as http2Constants } from 'http2';
+import { serialize } from 'cookie';
 import { TRPCError } from '@trpc/server';
 import type { ServerResponse } from 'http';
 import { publicProcedure, router } from '../trpc';
