@@ -35,4 +35,15 @@ export const publicRouter = router({
                 generatedAt: new Date(),
             };
         }),
+    
+    requestInfo: publicProcedure
+        .query(({ ctx }) => {
+            const req = ctx.req as any;
+            return {
+                headers: ctx.req.headers,
+                ip: req.ip || req.connection?.remoteAddress || 'unknown',
+                userAgent: ctx.req.headers['user-agent'],
+                timestamp: new Date(),
+            };
+        }),
 });
