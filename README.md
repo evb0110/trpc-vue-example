@@ -1,8 +1,65 @@
-# tRPC + Vue 3 Example with Authentication
+# tRPC + Vue 3 Example
 
-A complete example of using tRPC with Vue 3, TypeScript, and cookie-based authentication with role-based access control.
+A modern full-stack application demonstrating tRPC with Vue 3, TypeScript, and cookie-based authentication.
 
-## Features
+## 🚀 Quick Start
+
+### Development
+```bash
+npm install
+npm run dev
+```
+- Frontend: http://localhost:5173
+- API: http://localhost:3000
+
+### Production Deployment
+
+**Option 1: Automated Script (PM2 + nginx)**
+```bash
+# On VPS
+git clone https://github.com/evb0110/trpc-vue-example.git
+cd trpc-vue-example
+./scripts/deploy-production.sh
+```
+
+**Option 2: Docker (Coming Soon)**
+```bash
+# On VPS  
+git clone https://github.com/evb0110/trpc-vue-example.git
+cd trpc-vue-example
+docker-compose up -d
+```
+
+## 📁 Project Structure
+
+```
+trpc-vue-example/
+├── client/                 # Vue 3 frontend
+│   ├── src/
+│   │   ├── components/     # Vue components
+│   │   ├── composables/    # Vue composables
+│   │   └── api/           # tRPC client setup
+├── server/                 # tRPC backend
+│   ├── src/
+│   │   ├── api/           # API route definitions
+│   │   ├── middleware/    # Auth and rate limit middleware
+│   │   ├── context/       # tRPC context creation
+│   │   └── utils/         # Utilities
+├── scripts/                # Deployment scripts
+├── docs/                   # Documentation
+├── config/                 # Configuration files
+└── dist/                   # Built files (generated)
+```
+
+## 🛠️ Architecture
+
+- **Frontend**: Vue 3 + TypeScript + Vite
+- **Backend**: tRPC + Node.js + TypeScript  
+- **Auth**: Cookie-based with role permissions
+- **Build**: TypeScript → JavaScript (both client & server)
+- **Deploy**: PM2 + nginx or Docker
+
+## 🌟 Features
 
 - 🔒 **Secure Cookie-Based Authentication**
   - HttpOnly cookies prevent XSS attacks
@@ -14,119 +71,103 @@ A complete example of using tRPC with Vue 3, TypeScript, and cookie-based authen
   - Permission-based endpoints
   - Middleware for authentication and authorization
 
-- 🚦 **Rate Limiting**
-  - In-memory rate limiter
-  - Configurable request limits
-  - Per-IP tracking
-
 - 📁 **Clean Architecture**
   - Modular server structure
-  - Separated routers, middleware, and utilities
   - Component-based Vue frontend
+  - End-to-end TypeScript
 
-## Project Structure
+## 📚 Documentation
 
-```
-tRPC/
-├── server/
-│   ├── src/
-│   │   ├── routers/        # API route definitions
-│   │   │   ├── auth.router.ts
-│   │   │   ├── public.router.ts
-│   │   │   ├── user.router.ts
-│   │   │   └── admin.router.ts
-│   │   ├── middleware/     # Auth and rate limit middleware
-│   │   ├── context/        # tRPC context creation
-│   │   ├── types/          # TypeScript type definitions
-│   │   ├── utils/          # Utilities (cookies, auth, rate limit)
-│   │   ├── config/         # Configuration
-│   │   ├── app.ts          # Main router composition
-│   │   └── server.ts       # HTTP server setup
-│   └── index.ts            # Entry point
-├── client/
-│   └── src/
-│       ├── components/     # Vue components
-│       │   ├── AuthSection.vue
-│       │   ├── PublicRoutes.vue
-│       │   ├── ProtectedRoutes.vue
-│       │   └── AdminPanel.vue
-│       ├── composables/    # Vue composables
-│       │   └── useAuth.ts
-│       ├── api/            # tRPC client setup
-│       ├── App.vue         # Main app component
-│       └── main.ts         # Vue app entry
-└── package.json
-```
+- [`docs/deploy-local-prod.md`](docs/deploy-local-prod.md) - Test production setup locally
+- [`docs/DEPLOY-PRODUCTION.md`](docs/DEPLOY-PRODUCTION.md) - Automated VPS deployment
+- [`docs/deploy-vps.md`](docs/deploy-vps.md) - Manual VPS deployment guide
+- [`docs/SETUP-SSH-DEPLOY.md`](docs/SETUP-SSH-DEPLOY.md) - SSH key setup for deployment
 
-## Setup
+## 🔧 Available Scripts
 
-```bash
-npm install
-```
+### Development
+- `npm run dev` - Start both server and client
+- `npm run dev:server` - Start server only (port 3000)
+- `npm run dev:client` - Start client only (port 5173)
 
-## Development
+### Build
+- `npm run build` - Build both client and server for production
+- `npm run build:client` - Build Vue app only
+- `npm run build:server` - Build Node server only
 
-Run the server and client concurrently:
+### Linting
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint issues automatically
 
-```bash
-npm run dev
-```
+### Deployment
+- `./scripts/deploy-production.sh` - Deploy to production VPS
+- `./scripts/cleanup-non-docker.sh` - Clean up for Docker migration
 
-Or run them separately:
-
-```bash
-# Server (port 3000)
-npm run dev:server
-
-# Client (port 5173)
-npm run dev:client
-```
-
-## Authentication Flow
-
-1. **Login**: Sends credentials to `/loginAsUser` or `/loginAsAdmin`
-2. **Cookie Set**: Server sets httpOnly cookie with auth token
-3. **Requests**: All subsequent requests automatically include the cookie
-4. **Verification**: Server validates the cookie on each request
-5. **Logout**: Clears the authentication cookie
-
-## Mock Users
+## 🎯 Mock Users
 
 - **Regular User**
-  - Username: `user`
-  - Password: `password`
+  - Username: `user` / Password: `password`
   - Permissions: `read:profile`, `update:profile`
 
 - **Admin User**
-  - Username: `admin`
-  - Password: `password`
-  - Permissions: All user permissions plus `delete:users`, `read:analytics`, `manage:system`
+  - Username: `admin` / Password: `password`
+  - All permissions including `delete:users`, `manage:system`
 
-## API Endpoints
+## 🌐 API Endpoints
 
 ### Public Routes
 - `hello` - Simple greeting endpoint
-- `createUser` - Create a new user
-- `getRequestInfo` - Get request metadata
+- `getServerTime` - Get server timestamp
+- `generateReport` - Generate sample reports
+- `requestInfo` - Get request metadata
 
-### Protected Routes (Requires Authentication)
+### Protected Routes (Authentication Required)
 - `getProfile` - Get user profile
 - `updateProfile` - Update user profile
 - `whoami` - Get current user info and permissions
 
-### Admin Routes (Requires Admin Role)
+### Admin Routes (Admin Role Required)
 - `getAllUsers` - List all users
 - `getSystemStats` - Get system statistics
-- `deleteUser` - Delete a user (requires permission)
-- `getAnalytics` - View analytics (requires permission)
+- `deleteUser` - Delete a user
+- `getAnalytics` - View system analytics
 
-## Security Considerations
+## ⚙️ Configuration
 
-For production deployment:
-- Use HTTPS
-- Set proper cookie domain and secure flags
+Copy the appropriate environment file:
+
+**Development**: Already configured in `package.json`
+
+**Production**: 
+```bash
+cp config/.env.production .env
+# Update FRONTEND_URL with your domain
+```
+
+**Local Production Testing**:
+```bash
+cp config/.env.local-prod .env
+```
+
+## 🔒 Security Considerations
+
+This is a demo application. For production:
+- Use HTTPS with valid SSL certificates
 - Implement real JWT authentication
-- Use a proper database for user storage
+- Use proper database for user storage
 - Add CSRF tokens for additional security
-- Implement proper rate limiting with Redis
-- Add request validation and sanitization
+- Implement rate limiting with Redis
+- Add comprehensive input validation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes
+4. Commit: `git commit -m 'Add amazing feature'`
+5. Push: `git push origin feature/amazing-feature`
+6. Submit a pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details

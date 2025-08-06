@@ -1,14 +1,20 @@
 #!/bin/bash
 
 # Production deployment script for tRPC Vue Example
-# Usage: ./deploy-production.sh [GITHUB_REPO_URL] [DOMAIN]
-# Example: ./deploy-production.sh https://github.com/YOUR_USERNAME/trpc-vue-example.git e-aramaica.ru
+# Usage: ./deploy-production.sh [DOMAIN]
+# Example: ./deploy-production.sh e-aramaica.ru
 
 set -e  # Exit on error
 
 # Configuration
-REPO_URL=${1:-"https://github.com/evb0110/trpc-vue-example.git"}
-DOMAIN=${2:-"e-aramaica.ru"}
+DOMAIN=${1:-"e-aramaica.ru"}
+REPO_OWNER="evb0110"
+REPO_NAME="trpc-vue-example"
+
+# Try SSH first, fallback to HTTPS
+REPO_URL_SSH="git@github.com:$REPO_OWNER/$REPO_NAME.git"
+REPO_URL_HTTPS="https://github.com/$REPO_OWNER/$REPO_NAME.git"
+REPO_URL=""  # Will be determined later
 APP_DIR="/var/www/trpc-vue-example"
 PM2_APP_NAME="trpc-api"
 APP_USER="trpc-app"  # Dedicated user for the application
@@ -34,7 +40,7 @@ log_error() {
 
 # Check if running as root or with sudo
 if [ "$EUID" -ne 0 ]; then
-    log_error "Please run with sudo: sudo ./deploy-production.sh"
+    log_error "Please run as root or with sudo: sudo ./deploy-production.sh"
     exit 1
 fi
 
@@ -84,6 +90,40 @@ if ! id "$APP_USER" &>/dev/null; then
     usermod -aG www-data $APP_USER
 else
     log_info "User '$APP_USER' already exists"
+fi
+
+# Generate SSH key for the app user if it doesn't exist
+if [ ! -f "/home/$APP_USER/.ssh/id_ed25519" ]; then
+    log_info "Generating SSH key for '$APP_USER'..."
+    sudo -u $APP_USER ssh-keygen -t ed25519 -C "$APP_USER@$DOMAIN" -f /home/$APP_USER/.ssh/id_ed25519 -N ""
+    echo ""
+    log_warn "=========================================="
+    log_warn "SSH PUBLIC KEY FOR GITHUB:"
+    echo ""
+    sudo -u $APP_USER cat /home/$APP_USER/.ssh/id_ed25519.pub
+    echo ""
+    log_warn "=========================================="
+    log_warn "Add this key to GitHub:"
+    log_warn "1. Go to: https://github.com/$REPO_OWNER/$REPO_NAME/settings/keys"
+    log_warn "2. Click 'Add deploy key'"
+    log_warn "3. Paste the key above"
+    log_warn "4. Check 'Allow write access' (optional)"
+    log_warn "5. Click 'Add key'"
+    echo ""
+    log_warn "Press Enter after adding the key to continue..."
+    read -r
+else
+    log_info "SSH key already exists for '$APP_USER'"
+fi
+
+# Test SSH connection and determine which URL to use
+log_info "Testing SSH connection to GitHub..."
+if sudo -u $APP_USER ssh -o StrictHostKeyChecking=no -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    log_info "SSH authentication successful, using SSH URL"
+    REPO_URL=$REPO_URL_SSH
+else
+    log_warn "SSH authentication failed, using HTTPS URL"
+    REPO_URL=$REPO_URL_HTTPS
 fi
 
 # Step 3: Clean existing deployment
