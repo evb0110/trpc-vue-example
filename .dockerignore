@@ -1,0 +1,53 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Build outputs (will be generated in container)
+dist
+
+# Environment files (will be copied explicitly)
+.env
+.env.*
+!.env.production
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Documentation (not needed in container)
+docs
+*.md
+!README.md
+
+# Scripts (deployment scripts not needed in container)
+scripts
+
+# Config files not used in Docker
+config/nginx*.conf
+config/.env.local-prod
+
+# Temporary files
+tmp

@@ -14,7 +14,15 @@ npm run dev
 
 ### Production Deployment
 
-**Option 1: Automated Script (PM2 + nginx)**
+**Option 1: Docker (Recommended)** 🐳
+```bash
+# On VPS with Docker installed
+git clone https://github.com/evb0110/trpc-vue-example.git
+cd trpc-vue-example
+./scripts/docker-deploy.sh prod
+```
+
+**Option 2: Traditional (PM2 + nginx)**
 ```bash
 # On VPS
 git clone https://github.com/evb0110/trpc-vue-example.git
@@ -22,32 +30,18 @@ cd trpc-vue-example
 ./scripts/deploy-production.sh
 ```
 
-**Option 2: Docker (Coming Soon)**
-```bash
-# On VPS  
-git clone https://github.com/evb0110/trpc-vue-example.git
-cd trpc-vue-example
-docker-compose up -d
-```
-
 ## 📁 Project Structure
 
 ```
 trpc-vue-example/
 ├── client/                 # Vue 3 frontend
-│   ├── src/
-│   │   ├── components/     # Vue components
-│   │   ├── composables/    # Vue composables
-│   │   └── api/           # tRPC client setup
 ├── server/                 # tRPC backend
-│   ├── src/
-│   │   ├── api/           # API route definitions
-│   │   ├── middleware/    # Auth and rate limit middleware
-│   │   ├── context/       # tRPC context creation
-│   │   └── utils/         # Utilities
 ├── scripts/                # Deployment scripts
 ├── docs/                   # Documentation
 ├── config/                 # Configuration files
+├── docker/                 # Docker configurations
+├── Dockerfile              # Container build instructions
+├── docker-compose.yml      # Container orchestration
 └── dist/                   # Built files (generated)
 ```
 
@@ -57,7 +51,28 @@ trpc-vue-example/
 - **Backend**: tRPC + Node.js + TypeScript  
 - **Auth**: Cookie-based with role permissions
 - **Build**: TypeScript → JavaScript (both client & server)
-- **Deploy**: PM2 + nginx or Docker
+- **Deploy**: Docker containers OR PM2 + nginx
+
+## 🐳 Docker Deployment
+
+Docker provides the easiest and most reliable deployment method:
+
+### Local Testing (with Docker)
+```bash
+# Install Docker first: https://docs.docker.com/get-docker/
+git clone https://github.com/evb0110/trpc-vue-example.git
+cd trpc-vue-example
+./scripts/docker-deploy.sh local
+```
+
+### Production (VPS with Docker)
+```bash
+# On VPS
+curl -fsSL https://get.docker.com | sh  # Install Docker
+git clone https://github.com/evb0110/trpc-vue-example.git
+cd trpc-vue-example
+./scripts/docker-deploy.sh prod
+```
 
 ## 🌟 Features
 
@@ -76,10 +91,17 @@ trpc-vue-example/
   - Component-based Vue frontend
   - End-to-end TypeScript
 
+- 🐳 **Container Ready**
+  - Multi-stage Docker builds
+  - nginx + Node.js containers
+  - Health checks and auto-restart
+
 ## 📚 Documentation
 
+### Deployment Guides
+- [`docs/DOCKER-DEPLOYMENT.md`](docs/DOCKER-DEPLOYMENT.md) - **Docker deployment (recommended)**
+- [`docs/DEPLOY-PRODUCTION.md`](docs/DEPLOY-PRODUCTION.md) - Automated traditional deployment
 - [`docs/deploy-local-prod.md`](docs/deploy-local-prod.md) - Test production setup locally
-- [`docs/DEPLOY-PRODUCTION.md`](docs/DEPLOY-PRODUCTION.md) - Automated VPS deployment
 - [`docs/deploy-vps.md`](docs/deploy-vps.md) - Manual VPS deployment guide
 - [`docs/SETUP-SSH-DEPLOY.md`](docs/SETUP-SSH-DEPLOY.md) - SSH key setup for deployment
 
@@ -100,7 +122,8 @@ trpc-vue-example/
 - `npm run lint:fix` - Fix ESLint issues automatically
 
 ### Deployment
-- `./scripts/deploy-production.sh` - Deploy to production VPS
+- `./scripts/docker-deploy.sh [local|prod]` - **Deploy with Docker**
+- `./scripts/deploy-production.sh` - Deploy with PM2 + nginx
 - `./scripts/cleanup-non-docker.sh` - Clean up for Docker migration
 
 ## 🎯 Mock Users
@@ -134,18 +157,20 @@ trpc-vue-example/
 
 ## ⚙️ Configuration
 
-Copy the appropriate environment file:
-
-**Development**: Already configured in `package.json`
-
-**Production**: 
-```bash
-cp config/.env.production .env
-# Update FRONTEND_URL with your domain
+### Docker (Recommended)
+Configuration is automatic. For production, edit `docker-compose.prod.yml`:
+```yaml
+environment:
+  - FRONTEND_URL=http://your-domain.com
 ```
 
-**Local Production Testing**:
+### Traditional Deployment
+Copy the appropriate environment file:
 ```bash
+# Production
+cp config/.env.production .env
+
+# Local testing
 cp config/.env.local-prod .env
 ```
 
