@@ -8,8 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install ALL dependencies (including devDependencies for building)
-# Use --force to ensure all packages are installed even if there are peer dependency warnings
-RUN npm ci --force
+# Using npm install instead of npm ci to avoid the "Exit handler never called" issue
+# The --legacy-peer-deps flag helps with peer dependency resolution
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
