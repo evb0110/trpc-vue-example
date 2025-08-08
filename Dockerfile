@@ -7,8 +7,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies (including devDependencies for building)
-RUN npm ci
+# Install ALL dependencies (including devDependencies for building)
+# Use --force to ensure all packages are installed even if there are peer dependency warnings
+RUN npm ci --force
 
 # Copy source code
 COPY . .
