@@ -13,7 +13,8 @@ services:
       - "3000"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "3000"]
+      # Use Node to check that HTTP responds; avoids needing nc/curl in the image
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1));\""]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -36,7 +37,8 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/nginx-health"]
+      # Busybox wget is available in alpine; curl may not be
+      test: ["CMD-SHELL", "wget -qO- http://localhost/nginx-health > /dev/null 2>&1 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

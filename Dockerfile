@@ -4,20 +4,19 @@ FROM node:20
 # Set working directory
 WORKDIR /app
 
+# Enable corepack (for future use) and prepare npm cache dir
+RUN corepack enable || true
+
 # Copy package files first
 COPY package*.json ./
 
-# Install ALL dependencies (both dev and production)
-# Use multiple strategies to ensure it works
-RUN npm install || npm install --force || (rm -rf node_modules package-lock.json && npm install)
-
-# Verify critical dependencies are installed
-RUN which vue-tsc || (echo "vue-tsc not found, trying to install directly..." && npm install vue-tsc typescript vite @vitejs/plugin-vue tsup tsx --save-dev)
+# Install dependencies deterministically (prefer npm ci when lockfile present)
+RUN npm ci --include=dev || npm install
 
 # Copy all source files
 COPY . .
 
-# Build the application
+# Build the application (client + server)
 RUN npm run build
 
 # Remove dev dependencies after build to reduce image size
