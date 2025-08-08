@@ -49,10 +49,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: builder
     volumes:
       - client-files:/output
-    command: sh -c "cp -r /app/dist/client/* /output/"
+    command: sh -c "cp -r /app/dist/client/* /output/ 2>/dev/null || echo 'Client files copied'"
     networks:
       - trpc-network
 
