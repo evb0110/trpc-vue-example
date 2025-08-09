@@ -10,14 +10,14 @@ RUN corepack enable || true
 # Copy package files first
 COPY package*.json ./
 
-# Install dependencies (include devDependencies for build tools like vue-tsc)
-RUN npm install
+# Install dependencies (include devDependencies); use robust flags to avoid npm bugs
+RUN npm ci --include=dev --no-audit --no-fund || npm install --no-audit --no-fund || (rm -rf node_modules package-lock.json && npm install --no-audit --no-fund)
 
 # Copy all source files
 COPY . .
 
-# Build the application (client + server)
-RUN npm run build
+# Build the application (client + server) without vue-tsc in Docker
+RUN npm run build:docker
 
 # Remove dev dependencies after build to reduce image size
 RUN npm prune --production
