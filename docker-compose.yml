@@ -60,7 +60,7 @@ services:
         condition: service_started
     volumes:
       - client-files:/output
-    command: sh -c "cp -r /app/dist/client/* /output/ 2> /dev/null || echo 'Client files copied'"
+    command: sh -c "rm -rf /output/* && cp -rv /app/dist/client/* /output/ && echo 'Client files copied successfully' && ls -la /output/"
     networks:
       - trpc-network
 
