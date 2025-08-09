@@ -1,6 +1,7 @@
 services:
   # Node.js API server
   api:
+    image: trpc-vue-example:api
     build:
       context: .
       dockerfile: Dockerfile
@@ -48,12 +49,13 @@ services:
 
   # Helper container to copy built client files
   client-files-init:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: trpc-vue-example:api
+    depends_on:
+      api:
+        condition: service_started
     volumes:
       - client-files:/output
-    command: sh -c "cp -r /app/dist/client/* /output/ 2>/dev/null || echo 'Client files copied'"
+    command: sh -c "cp -r /app/dist/client/* /output/ 2> /dev/null || echo 'Client files copied'"
     networks:
       - trpc-network
 
