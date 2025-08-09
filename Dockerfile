@@ -10,8 +10,12 @@ RUN corepack enable || true
 # Copy package files first
 COPY package*.json ./
 
-# Install dependencies (include devDependencies); use robust flags to avoid npm bugs
-RUN npm ci --include=dev --no-audit --no-fund || npm install --no-audit --no-fund || (rm -rf node_modules package-lock.json && npm install --no-audit --no-fund)
+# Install ALL dependencies including devDependencies (needed for build)
+# Using npm install instead of ci for better compatibility
+RUN npm install --no-audit --no-fund --verbose
+
+# Verify that vite is installed
+RUN npx vite --version
 
 # Copy all source files
 COPY . .
