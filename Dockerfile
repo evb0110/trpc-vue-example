@@ -7,9 +7,6 @@ WORKDIR /app
 # Enable corepack (for future use) and prepare npm cache dir
 RUN corepack enable || true
 
-# Pin npm to a stable version to avoid known npm CLI bugs during CI builds
-RUN npm i -g npm@10.8.1
-
 # Copy package files first
 COPY package*.json ./
 
