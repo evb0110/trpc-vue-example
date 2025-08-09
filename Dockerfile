@@ -11,11 +11,13 @@ RUN corepack enable || true
 COPY package*.json ./
 
 # Install ALL dependencies including devDependencies (needed for build)
-# Using npm install instead of ci for better compatibility
-RUN npm install --no-audit --no-fund --verbose
+# First try with ci for speed, fallback to install if needed
+RUN npm ci --no-audit --no-fund || \
+    npm install --no-audit --no-fund --legacy-peer-deps || \
+    (echo "Retrying with cache clear..." && npm cache clean --force && npm install --no-audit --no-fund --legacy-peer-deps)
 
 # Verify that vite is installed
-RUN npx vite --version
+RUN npx vite --version || (echo "Vite not found, listing node_modules:" && ls -la node_modules/ | head -20 && exit 1)
 
 # Copy all source files
 COPY . .
