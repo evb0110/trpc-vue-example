@@ -10,8 +10,8 @@ RUN corepack enable || true
 # Copy package files first
 COPY package*.json ./
 
-# Install dependencies deterministically (prefer npm ci when lockfile present)
-RUN npm ci --include=dev || npm install
+# Install dependencies (include devDependencies for build tools like vue-tsc)
+RUN npm install
 
 # Copy all source files
 COPY . .
